@@ -8,7 +8,7 @@ from tkinter import DISABLED, VERTICAL
 root = tkinter.Tk()
 root.title("Chat Application")
 root.iconbitmap("icon.ico")
-root.geometry("600x600")
+root.geometry("700x700")
 root.resizable(0, 0)
 
 
@@ -71,6 +71,15 @@ my_scrollbar.config(command=my_listbox.yview)
 
 my_listbox.grid(row=0, column=0)
 my_scrollbar.grid(row=0, column=1, sticky="NS")
+
+# Input Frame Layout
+
+input_entry = tkinter.Entry(
+    input_frame, bg=black, fg=light_green, font=my_font, borderwidth=3, width=45)
+send_button = tkinter.Button(
+    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED)
+input_entry.grid(row=0, column=0, padx=5, pady=5)
+send_button.grid(row=0, column=1, padx=5, pady=5)
 
 
 # Define Main Loop
