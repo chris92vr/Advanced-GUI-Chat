@@ -2,7 +2,7 @@
 import tkinter
 import socket
 import threading
-from tkinter import DISABLED, VERTICAL, END
+from tkinter import DISABLED, VERTICAL, END, NORMAL
 
 # Define Window
 root = tkinter.Tk()
@@ -59,7 +59,40 @@ def connect():
 
 
 def verify_connection(name):
-    pass
+    '''Verify that the server connection is valid and pass required information'''
+    global client_socket
+
+    # The server will send a NAME flag if a valid connection is made
+    flag = client_socket.recv(BYTESIZE).decode(ENCODER)
+    if flag == 'NAME':
+        # The connection was made, send client name and await confirmation
+        client_socket.send(name.encode(ENCODER))
+        message = client_socket.recv(BYTESIZE).decode(ENCODER)
+
+        if message:
+            # Server sent a verification, connection is valid!
+            my_listbox.insert(0, message)
+
+            # Change button/entr states
+            connect_button.config(state=DISABLED)
+            disconnect_button.config(state=NORMAL)
+            send_button.config(state=NORMAL)
+
+            name_entry.config(state=DISABLED)
+            ip_entry.config(state=DISABLED)
+            port_entry.config(state=DISABLED)
+
+            # Create a thread to continuosly receive a message from the server
+            receive_thread = threading.Thread(target=receive)
+            receive_thread.start()
+        else:
+            # No verification message was receive
+            my_listbox.insert(0, "Connection not verified, GOODBYE!")
+            client_socket.close()
+    else:
+        # No anme flag was sent, connection refused
+        my_listbox.insert(0, "Connection refused! Goodbye..")
+        client_socket.close()
 
 
 def disconnect():
