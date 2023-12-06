@@ -2,7 +2,7 @@
 import tkinter
 import socket
 import threading
-from tkinter import DISABLED
+from tkinter import DISABLED, VERTICAL
 
 # Define Window
 root = tkinter.Tk()
@@ -61,6 +61,17 @@ ip_label.grid(row=1, column=0, padx=2, pady=5)
 ip_entry.grid(row=1, column=1, padx=2, pady=5)
 connect_button.grid(row=1, column=2, padx=4, pady=5)
 disconnect_button.grid(row=1, column=3, padx=4, pady=5)
+
+# Output Frame Layout
+
+my_scrollbar = tkinter.Scrollbar(output_frame, orient=VERTICAL)
+my_listbox = tkinter.Listbox(output_frame, height=20, width=45, yscrollcommand=my_scrollbar.set,
+                             bg=black, fg=light_green, font=my_font, borderwidth=3)
+my_scrollbar.config(command=my_listbox.yview)
+
+my_listbox.grid(row=0, column=0)
+my_scrollbar.grid(row=0, column=1, sticky="NS")
+
 
 # Define Main Loop
 
