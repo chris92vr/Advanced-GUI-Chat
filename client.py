@@ -2,13 +2,13 @@
 import tkinter
 import socket
 import threading
-from tkinter import DISABLED, VERTICAL, END, NORMAL
+from tkinter import DISABLED, VERTICAL, END, NORMAL, StringVar
 
 # Define Window
 root = tkinter.Tk()
 root.title("Chat Application")
 root.iconbitmap("icon.ico")
-root.geometry("700x700")
+root.geometry("800x800")
 root.resizable(0, 0)
 
 
@@ -17,6 +17,14 @@ root.resizable(0, 0)
 my_font = ("Arial", 14)
 black = "#010101"
 light_green = "#7ed957"
+white = "#ffffff"
+light_gray = "#e8e8e8"
+orange = "#ff862f"
+dark_green = "#324930"
+pink = "#ff0080"
+blue = "#00bfff"
+yellow = "#ffff00"
+purple = "#800080"
 root.config(bg=black)
 
 
@@ -140,10 +148,12 @@ def receive():
 # Define GUI Layout
 # Create Frames
 info_frame = tkinter.Frame(root, bg=black)
+color_frame = tkinter.Frame(root, bg=black)
 output_frame = tkinter.Frame(root, bg=black)
 input_frame = tkinter.Frame(root, bg=black)
 
 info_frame.pack()
+color_frame.pack()
 output_frame.pack(pady=10)
 input_frame.pack()
 
@@ -175,6 +185,43 @@ ip_entry.grid(row=1, column=1, padx=2, pady=5)
 connect_button.grid(row=1, column=2, padx=4, pady=5)
 disconnect_button.grid(row=1, column=3, padx=4, pady=5)
 
+# Color Frame Layout
+
+color = StringVar()
+color.set(white)
+color_label = tkinter.Label(
+    color_frame, text="Choose a color:", bg=black, fg=light_green, font=my_font)
+
+white_button = tkinter.Radiobutton(
+    color_frame, text="White", variable=color, value=white, bg=black, fg=light_green, font=my_font)
+light_gray_button = tkinter.Radiobutton(
+    color_frame, text="Light Gray", variable=color, value=light_gray, bg=black, fg=light_green, font=my_font)
+orange_button = tkinter.Radiobutton(
+    color_frame, text="Orange", variable=color, value=orange, bg=black, fg=light_green, font=my_font)
+dark_green_button = tkinter.Radiobutton(
+    color_frame, text="Dark Green", variable=color, value=dark_green, bg=black, fg=light_green, font=my_font)
+pink_button = tkinter.Radiobutton(
+    color_frame, text="Pink", variable=color, value=pink, bg=black, fg=light_green, font=my_font)
+blue_button = tkinter.Radiobutton(
+    color_frame, text="Blue", variable=color, value=blue, bg=black, fg=light_green, font=my_font)
+yellow_button = tkinter.Radiobutton(
+    color_frame, text="Yellow", variable=color, value=yellow, bg=black, fg=light_green, font=my_font)
+purple_button = tkinter.Radiobutton(
+    color_frame, text="Purple", variable=color, value=purple, bg=black, fg=light_green, font=my_font)
+color_buttons = [white_button, light_gray_button, orange_button, dark_green_button, pink_button,
+                 blue_button, yellow_button, purple_button]
+
+
+white_button.grid(row=1, column=0, padx=2, pady=2)
+light_gray_button.grid(row=1, column=1, padx=2, pady=2)
+orange_button.grid(row=1, column=2, padx=2, pady=2)
+dark_green_button.grid(row=1, column=3, padx=2, pady=2)
+pink_button.grid(row=1, column=4, padx=2, pady=2)
+blue_button.grid(row=1, column=5, padx=2, pady=2)
+yellow_button.grid(row=1, column=6, padx=2, pady=2)
+purple_button.grid(row=1, column=7, padx=2, pady=2)
+color_label.grid(row=0, column=3, padx=2, pady=2)
+
 # Output Frame Layout
 
 my_scrollbar = tkinter.Scrollbar(output_frame, orient=VERTICAL)
@@ -191,8 +238,8 @@ input_entry = tkinter.Entry(
     input_frame, bg=black, fg=light_green, font=my_font, borderwidth=3, width=45)
 send_button = tkinter.Button(
     input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED, borderwidth=5, command=send)
-input_entry.grid(row=0, column=0, padx=5, pady=5)
-send_button.grid(row=0, column=1, padx=5, pady=5)
+input_entry.grid(row=0, column=0, padx=5)
+send_button.grid(row=0, column=1, padx=5)
 
 
 # Define Main Loop
