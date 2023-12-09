@@ -34,7 +34,7 @@ def recieve_message(client_socket):
 
             # Recieve message from the client
             message = client_socket.recv(BYTESIZE).decode(ENCODER)
-            message = f"\033[1;92m\t{name}: {message}\033[0m".encode(ENCODER)
+            message = f"{name}: {message}".encode(ENCODER)
             broadcast_message(message)
         except:
             # Find the index of the client socket in our list
@@ -50,7 +50,7 @@ def recieve_message(client_socket):
 
             # Broadcast that the client has left the chat.
             broadcast_message(
-                f"\033[5;91m\t{name} has left the chat!\033[0m".encode(ENCODER))
+                f"{name} has left the chat!".encode(ENCODER))
             break
 
 
@@ -83,5 +83,6 @@ def connect_client():
 
 
 # Start the server
+print(f"Server IP: {HOST_IP}", f"Server Port: {HOST_PORT}", sep="\n")
 print("Server is listening for incoming connections...\n")
 connect_client()
