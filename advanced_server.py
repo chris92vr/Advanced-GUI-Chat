@@ -60,6 +60,37 @@ hystory_scrollbar.config(command=history_listbox.yview)
 history_listbox.grid(row=0, column=0)
 hystory_scrollbar.grid(row=0, column=1, sticky="NS")
 
+# Layout for the client frame
+
+client_scrollbar = tk.Scrollbar(client_frame, orient=VERTICAL)
+client_listbox = tk.Listbox(client_frame, height=15, width=55, borderwidth=3,
+                            bg=black, fg=light_green, font=my_font, yscrollcommand=client_scrollbar.set)
+client_scrollbar.config(command=client_listbox.yview)
+
+client_listbox.grid(row=0, column=0)
+client_scrollbar.grid(row=0, column=1, sticky="NS")
+
+# Layout for the message frame
+input_entry = tk.Entry(message_frame, width=45, borderwidth=3,
+                       font=my_font)
+send_button = tk.Button(message_frame, text="Broadcast", borderwidth=5, width=10,
+                        font=my_font, bg=light_green, state=DISABLED)
+input_entry.grid(row=0, column=0, padx=5, pady=5)
+send_button.grid(row=0, column=1, padx=5, pady=5)
+
+# Layout for the admin frame
+
+message_button = tk.Button(admin_frame, text="Send PM", font=my_font,
+                           bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+kick_button = tk.Button(admin_frame, text="Kick", font=my_font,
+                        bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+ban_button = tk.Button(admin_frame, text="Ban", font=my_font,
+                       bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+
+message_button.grid(row=0, column=0, padx=5, pady=5)
+kick_button.grid(row=0, column=1, padx=5, pady=5)
+ban_button.grid(row=0, column=2, padx=5, pady=5)
+
 # Run root window's main loop
 
 root.mainloop()
