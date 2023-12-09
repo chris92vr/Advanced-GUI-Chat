@@ -90,14 +90,21 @@ def verify_connection(name):
             my_listbox.insert(0, "Connection not verified, GOODBYE!")
             client_socket.close()
     else:
-        # No anme flag was sent, connection refused
+        # No name flag was sent, connection refused
         my_listbox.insert(0, "Connection refused! Goodbye..")
         client_socket.close()
 
 
 def disconnect():
     ''' Disconnects from the server. '''
-    pass
+    global client_socket
+
+    # Close the client socket
+    client_socket.close()
+
+    # Change button/entry states
+    connect_button.config(state=NORMAL)
+    disconnect_button.config(state=DISABLED)
 
 
 def send():
@@ -137,7 +144,7 @@ port_entry = tkinter.Entry(
 connect_button = tkinter.Button(
     info_frame, text="Connect", bg=light_green,  font=my_font, borderwidth=5, width=10, command=connect)
 disconnect_button = tkinter.Button(
-    info_frame, text="Disconnect", bg=light_green,  font=my_font, borderwidth=5, width=10, state=DISABLED)
+    info_frame, text="Disconnect", bg=light_green,  font=my_font, borderwidth=5, width=10, state=DISABLED, command=disconnect)
 
 name_label.grid(row=0, column=0, padx=2, pady=10)
 name_entry.grid(row=0, column=1, padx=2, pady=10)
