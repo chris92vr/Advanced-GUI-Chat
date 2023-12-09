@@ -109,12 +109,32 @@ def disconnect():
 
 def send():
     ''' Sends message to the server. '''
-    pass
+    global client_socket
+
+    # Send the message to the server
+    message = input_entry.get()
+    client_socket.send(message.encode(ENCODER))
+
+    # Clear the input field
+    input_entry.delete(0, END)
 
 
 def receive():
     ''' Receives messages from the server. '''
-    pass
+    global client_socket
+
+    while True:
+        try:
+            # Receive message from the server
+            message = client_socket.recv(BYTESIZE).decode(ENCODER)
+            my_listbox.insert(0, message)
+        except:
+            # An error occurred, close the client socket
+            print("An error occurred, closing the client socket...", flush=True)
+            my_listbox.insert(
+                0, "An error occurred, closing the client socket...")
+            disconnect()
+            break
 
 
 # Define GUI Layout
@@ -170,7 +190,7 @@ my_scrollbar.grid(row=0, column=1, sticky="NS")
 input_entry = tkinter.Entry(
     input_frame, bg=black, fg=light_green, font=my_font, borderwidth=3, width=45)
 send_button = tkinter.Button(
-    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED)
+    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED, borderwidth=5, command=send)
 input_entry.grid(row=0, column=0, padx=5, pady=5)
 send_button.grid(row=0, column=1, padx=5, pady=5)
 
