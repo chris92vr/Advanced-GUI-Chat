@@ -4,6 +4,7 @@ import tkinter
 import socket
 import threading
 from tkinter import DISABLED, VERTICAL, END, NORMAL, StringVar
+import json
 
 # Define Window
 root = tkinter.Tk()
@@ -29,30 +30,40 @@ purple = "#800080"
 root.config(bg=black)
 
 
-# Define socket costants
-
-ENCODER = "utf-8"
-BYTESIZE = 1024
-global client_socket  # Global socket variable (not a good practice)
-
-
 class Connection():
     '''A class to store a connectiopn  - a client socket and its information'''
 
-    def __init__(self, connection, address):
-        self.connection = connection
-        self.address = address
-        self.name = None
-        self.admin = False
-        self.banned = False
-        self.kicked = False
+    def __init__(self):
+        self.encoder = "utf-8"
+        self.bytesize = 1024
 
 # Define Functions
 
 
 def connect(connection):
     '''Connect to a server at a given ip/port address'''
-    pass
+    # Clear any previous chats
+    my_listbox.delete(0, END)
+
+    # Get the required information from the GUI
+    connection.name = name_entry.get()
+    connection.host_ip = ip_entry.get()
+    connection.port = int(port_entry.get())
+    connection.color = color.get()
+
+    try:
+        # Create a client socket
+        connection.client_socket = socket.socket(
+            socket.AF_INET, socket.SOCK_STREAM)
+        connection.client_socket.connect((connection.host_ip, connection.port))
+
+        # Receive the server's welcome message
+        message_json = connection.client_socket.recv(
+            connection.bytesize).decode(connection.encoder)
+        process_message(connection, message_json)
+    except:
+        my_listbox.insert(END, "Error connecting to server")
+        return
 
 
 def disconnect(connection):
@@ -117,7 +128,7 @@ port_label = tkinter.Label(info_frame, text="Port:",
 port_entry = tkinter.Entry(
     info_frame, bg=black, fg=light_green, font=my_font, borderwidth=3, width=10)
 connect_button = tkinter.Button(
-    info_frame, text="Connect", bg=light_green,  font=my_font, borderwidth=5, width=10, command=connect)
+    info_frame, text="Connect", bg=light_green,  font=my_font, borderwidth=5, width=10, command=lambda: connect(my_connection))
 disconnect_button = tkinter.Button(
     info_frame, text="Disconnect", bg=light_green,  font=my_font, borderwidth=5, width=10, state=DISABLED, command=disconnect)
 
@@ -182,11 +193,12 @@ my_scrollbar.grid(row=0, column=1, sticky="NS")
 input_entry = tkinter.Entry(
     input_frame, bg=black, fg=light_green, font=my_font, borderwidth=3, width=45)
 send_button = tkinter.Button(
-    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED, borderwidth=5, command=send)
+    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED, borderwidth=5, command=send_message)
 input_entry.grid(row=0, column=0, padx=5)
 send_button.grid(row=0, column=1, padx=5)
 
 
-# Define Main Loop
+# Create a Connection instance and pass it to the GUI
 
+my_connection = Connection()
 root.mainloop()
