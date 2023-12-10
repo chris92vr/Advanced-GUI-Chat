@@ -67,7 +67,25 @@ def start_server(connection):
 
 def end_server(connection):
     '''Ends the server and closes all connections'''
-    pass
+    # Alert all clients that the server is closing
+    message_packet = create_message(
+        "DISCONNECT", "Admin (broadcast)", "Server is shutting down", light_green)
+    message_json = json.dumps(message_packet)
+    broadcast_message(connection, message_json.encode(connection.encoder))
+
+    # Update the GUI
+    start_button.config(state=NORMAL)
+    end_button.config(state=DISABLED)
+    port_entry.config(state=NORMAL)
+    input_entry.config(state=DISABLED)
+    send_button.config(state=DISABLED)
+    message_button.config(state=DISABLED)
+    kick_button.config(state=DISABLED)
+    ban_button.config(state=DISABLED)
+    history_listbox.insert(0, f"Server ended on port {connection.port}")
+
+    # Close Server Socket
+    connection.server_socket.close()
 
 
 def connect_client(connection):
@@ -220,14 +238,40 @@ def private_message(connection):
     input_entry.delete(0, END)
 
 
-def kick_client(connection, message_json):
+def kick_client(connection):
     '''Kicks a client from the server'''
-    pass
+    # Select the client from the client listbox and access the client socket
+    client_index = client_listbox.curselection()[0]
+    client_socket = connection.client_sockets[client_index]
+
+    # Create a message packet
+    message_packet = create_message(
+        "DISCONNECT", "Admin (private)", "You have been kicked from the server", light_green)
+    message_json = json.dumps(message_packet)
+    client_socket.send(message_json.encode(connection.encoder))
+
+    # Close the client socket
+    client_socket.close()
 
 
-def ban_client(connection, message_json):
+def ban_client(connection):
     '''Bans a client from the server'''
-    pass
+    # Select the client from the client listbox and access the client socket
+    client_index = client_listbox.curselection()[0]
+    client_socket = connection.client_sockets[client_index]
+    client_ip = connection.client_ips[client_index]
+
+    # Create a message packet
+    message_packet = create_message(
+        "DISCONNECT", "Admin (private)", "You have been banned from the server", light_green)
+    message_json = json.dumps(message_packet)
+    client_socket.send(message_json.encode(connection.encoder))
+
+    # Ban the client
+    connection.banned_ips.append(connection.client_ips[client_index])
+
+    # Close the client socket
+    client_socket.close()
 
 
 # Define GUI Layout
@@ -252,7 +296,7 @@ port_entry = tk.Entry(connection_frame, bg=black,
 start_button = tk.Button(connection_frame, text="Start Server",
                          font=my_font, bg=light_green, fg=black, borderwidth=5, command=lambda: start_server(my_connection))
 end_button = tk.Button(connection_frame, text="End Server", font=my_font,
-                       bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+                       bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: end_server(my_connection))
 
 port_label.grid(row=0, column=0, padx=2, pady=10)
 port_entry.grid(row=0, column=1, padx=2, pady=10)
@@ -292,9 +336,9 @@ send_button.grid(row=0, column=1, padx=5, pady=5)
 message_button = tk.Button(admin_frame, text="Send PM", font=my_font,
                            bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: private_message(my_connection))
 kick_button = tk.Button(admin_frame, text="Kick", font=my_font,
-                        bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+                        bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: kick_client(my_connection))
 ban_button = tk.Button(admin_frame, text="Ban", font=my_font,
-                       bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+                       bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: ban_client(my_connection))
 
 message_button.grid(row=0, column=0, padx=5, pady=5)
 kick_button.grid(row=0, column=1, padx=5, pady=5)

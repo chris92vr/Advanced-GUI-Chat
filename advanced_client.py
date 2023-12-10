@@ -148,7 +148,10 @@ def process_message(connection, message_json):
         my_listbox.itemconfig(0, fg=color)
 
     elif flag == "DISCONNECT":
-        pass
+        # Server sending a disconnect message to the client
+        my_listbox.insert(0, f"{name}: {message}")
+        my_listbox.itemconfig(0, fg=color)
+        disconnect(connection)
 
     else:
         # Catch for errors
