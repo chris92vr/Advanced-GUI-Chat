@@ -154,7 +154,8 @@ def process_message(connection, message_json, client_socket, client_address=(0, 
 
 def broadcast_message(connection, message_json):
     '''Broadcasts a message to all clients. All JSON are encoded'''
-    pass
+    for client_socket in connection.client_sockets:
+        client_socket.send(message_json)
 
 
 def receive_message(connection, client_socket):
