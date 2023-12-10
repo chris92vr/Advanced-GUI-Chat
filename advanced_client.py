@@ -71,9 +71,17 @@ def disconnect(connection):
     pass
 
 
-def gui_start(connection):
+def gui_start():
     '''Starts the GUI for the chat application'''
-    pass
+    connect_button.config(state=DISABLED)
+    disconnect_button.config(state=NORMAL)
+    name_entry.config(state=DISABLED)
+    ip_entry.config(state=DISABLED)
+    port_entry.config(state=DISABLED)
+    for button in color_buttons:
+        button.config(state=DISABLED)
+    input_entry.config(state=NORMAL)
+    send_button.config(state=NORMAL)
 
 
 def gui_end(connection):
@@ -88,7 +96,36 @@ def create_message(flag, name, message, color):
 
 def process_message(connection, message_json):
     '''Update client based on message packet flag'''
-    pass
+    # Update the chat history by unpacking the message packet
+    message_packet = json.loads(message_json)
+    flag = message_packet["flag"]
+    name = message_packet["name"]
+    message = message_packet["message"]
+    color = message_packet["color"]
+
+    if flag == "INFO":
+        # Server asking ionformation about the client. Send the name and color
+        message_packet = create_message(
+            "INFO", connection.name, "Joined the chat", connection.color)
+        message_json = json.dumps(message_packet)
+        connection.client_socket.send(message_json.encode(connection.encoder))
+
+        # Enable the GUI for chatting
+        gui_start()
+
+        # Create a thread to constantly receive messages from the server
+        receive_thread = threading.Thread(
+            target=receive_message, args=(connection,))
+        receive_thread.start()
+    elif flag == "MESSAGE":
+        pass
+
+    elif flag == "DISCONNECT":
+        pass
+
+    else:
+        # Catch for errors
+        my_listbox.insert(END, "Error receiving message from server")
 
 
 def send_message(connection, message_json):
