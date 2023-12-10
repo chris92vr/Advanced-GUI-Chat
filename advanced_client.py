@@ -91,7 +91,14 @@ def gui_end(connection):
 
 def create_message(flag, name, message, color):
     '''Creates a JSON message to be sent to the clients'''
-    pass
+    message_packet = {
+        "flag": flag,
+        "name": name,
+        "message": message,
+        "color": color
+    }
+
+    return message_packet
 
 
 def process_message(connection, message_json):
