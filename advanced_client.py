@@ -178,8 +178,7 @@ def receive_message(connection):
             process_message(connection, message_json)
         except:
             # Catch errors
-            my_listbox.insert(
-                END, "ERROR: Unable to receive message from client")
+            my_listbox.insert(0, "Connection has been closed by the server")
 
             break
 

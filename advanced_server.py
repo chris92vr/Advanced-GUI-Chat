@@ -146,7 +146,7 @@ def process_message(connection, message_json, client_socket, client_address=(0, 
 
         # Broadcast the new connection to all clients and update the GUI
         message_packet = create_message(
-            "MESSAGE", "Admin", f"{name} has joined the server", light_green)
+            "MESSAGE", "Admin(broadcast)", f"{name} has joined the server", light_green)
         message_json = json.dumps(message_packet)
         broadcast_message(connection, message_json.encode(connection.encoder))
 
