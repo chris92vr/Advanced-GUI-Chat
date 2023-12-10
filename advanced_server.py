@@ -182,7 +182,8 @@ def process_message(connection, message_json, client_socket, client_address=(0, 
         broadcast_message(connection, message_json.encode(connection.encoder))
 
         # Update the GUI
-        history_listbox.insert(0, f"{name} has left the server")
+        history_listbox.insert(
+            0, f"Admin (broadcast): {name} has left the server")
 
     else:
         # Catch errors
@@ -250,9 +251,6 @@ def kick_client(connection):
     message_json = json.dumps(message_packet)
     client_socket.send(message_json.encode(connection.encoder))
 
-    # Close the client socket
-    client_socket.close()
-
 
 def ban_client(connection):
     '''Bans a client from the server'''
@@ -269,9 +267,6 @@ def ban_client(connection):
 
     # Ban the client
     connection.banned_ips.append(connection.client_ips[client_index])
-
-    # Close the client socket
-    client_socket.close()
 
 
 # Define GUI Layout

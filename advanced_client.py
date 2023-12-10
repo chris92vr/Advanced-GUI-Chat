@@ -75,7 +75,7 @@ def disconnect(connection):
     connection.client_socket.send(message_json.encode(connection.encoder))
 
     # Disable the GUI for chatting
-    gui_end(connection)
+    gui_end()
 
 
 def gui_start():
@@ -91,7 +91,7 @@ def gui_start():
     send_button.config(state=NORMAL)
 
 
-def gui_end(connection):
+def gui_end():
     '''Ends the GUI for the chat application'''
     connect_button.config(state=NORMAL)
     disconnect_button.config(state=DISABLED)
@@ -102,9 +102,6 @@ def gui_end(connection):
         button.config(state=NORMAL)
     input_entry.config(state=DISABLED)
     send_button.config(state=DISABLED)
-
-    # Close the client socket
-    connection.client_socket.close()
 
 
 def create_message(flag, name, message, color):
