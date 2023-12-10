@@ -150,7 +150,21 @@ def process_message(connection, message_json, client_socket, client_address=(0, 
         history_listbox.itemconfig(0, fg=color)
 
     elif flag == "DISCONNECT":
-        pass
+        # Close/disconnect the client socket
+        index = connection.client_sockets.index(client_socket)
+        connection.client_sockets.remove(client_socket)
+        connection.client_ips.pop(index)
+        client_listbox.delete(index)
+        client_socket.close()
+
+        # Broadcast the disconnection to all clients and update the GUI
+        message_packet = create_message(
+            "MESSAGE", "Admin  (broadcast)", f"{name} has left the server", light_green)
+        message_json = json.dumps(message_packet)
+        broadcast_message(connection, message_json.encode(connection.encoder))
+
+        # Update the GUI
+        history_listbox.insert(0, f"{name} has left the server")
 
     else:
         # Catch errors

@@ -68,7 +68,14 @@ def connect(connection):
 
 def disconnect(connection):
     ''' Disconnects from the server. '''
-    pass
+    # Create message packet
+    message_packet = create_message(
+        "DISCONNECT", connection.name, "Left the chat", connection.color)
+    message_json = json.dumps(message_packet)
+    connection.client_socket.send(message_json.encode(connection.encoder))
+
+    # Disable the GUI for chatting
+    gui_end(connection)
 
 
 def gui_start():
@@ -86,7 +93,18 @@ def gui_start():
 
 def gui_end(connection):
     '''Ends the GUI for the chat application'''
-    pass
+    connect_button.config(state=NORMAL)
+    disconnect_button.config(state=DISABLED)
+    name_entry.config(state=NORMAL)
+    ip_entry.config(state=NORMAL)
+    port_entry.config(state=NORMAL)
+    for button in color_buttons:
+        button.config(state=NORMAL)
+    input_entry.config(state=DISABLED)
+    send_button.config(state=DISABLED)
+
+    # Close the client socket
+    connection.client_socket.close()
 
 
 def create_message(flag, name, message, color):
@@ -195,7 +213,7 @@ port_entry = tkinter.Entry(
 connect_button = tkinter.Button(
     info_frame, text="Connect", bg=light_green,  font=my_font, borderwidth=5, width=10, command=lambda: connect(my_connection))
 disconnect_button = tkinter.Button(
-    info_frame, text="Disconnect", bg=light_green,  font=my_font, borderwidth=5, width=10, state=DISABLED, command=disconnect)
+    info_frame, text="Disconnect", bg=light_green,  font=my_font, borderwidth=5, width=10, state=DISABLED, command=lambda: disconnect(my_connection))
 
 name_label.grid(row=0, column=0, padx=2, pady=10)
 name_entry.grid(row=0, column=1, padx=2, pady=10)
