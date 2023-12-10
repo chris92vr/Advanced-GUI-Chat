@@ -125,7 +125,9 @@ def process_message(connection, message_json):
             target=receive_message, args=(connection,))
         receive_thread.start()
     elif flag == "MESSAGE":
-        pass
+        # Server sending a message to the client
+        my_listbox.insert(0, f"{name}: {message}")
+        my_listbox.itemconfig(0, fg=color)
 
     elif flag == "DISCONNECT":
         pass
@@ -135,14 +137,33 @@ def process_message(connection, message_json):
         my_listbox.insert(END, "Error receiving message from server")
 
 
-def send_message(connection, message_json):
+def send_message(connection):
     '''Sends a message to the server'''
-    pass
+    # Send the message to the server
+    message_packet = create_message("MESSAGE", connection.name,
+                                    input_entry.get(), connection.color)
+    message_json = json.dumps(message_packet)
+    connection.client_socket.send(message_json.encode(connection.encoder))
+
+    # Clear the input field
+    input_entry.delete(0, END)
 
 
 def receive_message(connection):
     '''Receives a message from the server'''
-    pass
+    while True:
+        # Receive incoming message from server
+        try:
+            # Receve an incoming message packet
+            message_json = connection.client_socket.recv(
+                connection.bytesize).decode(connection.encoder)
+            process_message(connection, message_json)
+        except:
+            # Catch errors
+            my_listbox.insert(
+                END, "ERROR: Unable to receive message from client")
+
+            break
 
 
 # Define GUI Layout
@@ -237,7 +258,7 @@ my_scrollbar.grid(row=0, column=1, sticky="NS")
 input_entry = tkinter.Entry(
     input_frame, bg=black, fg=light_green, font=my_font, borderwidth=3, width=45)
 send_button = tkinter.Button(
-    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED, borderwidth=5, command=send_message)
+    input_frame, text="Send", bg=light_green, font=my_font, width=10, state=DISABLED, borderwidth=5, command=lambda: send_message(my_connection))
 input_entry.grid(row=0, column=0, padx=5)
 send_button.grid(row=0, column=1, padx=5)
 
