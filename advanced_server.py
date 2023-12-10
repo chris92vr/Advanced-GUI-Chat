@@ -59,6 +59,11 @@ def start_server(connection):
     history_listbox.delete(0, END)
     history_listbox.insert(0, f"Server started on port {connection.port}")
 
+    # Create a thread to listen for connections
+    connection_thread = threading.Thread(
+        target=connect_client, args=(connection,))
+    connection_thread.start()
+
 
 def end_server(connection):
     '''Ends the server and closes all connections'''
