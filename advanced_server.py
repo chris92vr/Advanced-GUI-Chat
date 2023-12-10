@@ -9,7 +9,7 @@ from tkinter import DISABLED, END, NORMAL, VERTICAL
 root = tk.Tk()
 root.title("Chat Server")
 root.iconbitmap("icon.ico")
-root.geometry("600x600")
+root.geometry("800x800")
 root.resizable(0, 0)
 
 # Define fonts and colors
@@ -18,7 +18,96 @@ black = "#010101"
 light_green = "#1fc742"
 root.config(bg=black)
 
+# Create a connection class to handle all the connection logic
+
+
+class Connection:
+    '''A class to store a connection and its information'''
+
+    def __init__(self):
+        self.host_ip = socket.gethostbyname(socket.gethostname())
+        self.encoder = "utf-8"
+        self.bytesize = 1024
+
+        self.client_sockets = []
+        self.client_ips = []
+        self.banned_ips = []
+
+
 # Define functions
+
+def start_server(connection):
+    '''Starts the server and listens for connections'''
+    # Get the port number from the entry box and attache it to the connection object
+    connection.port = int(port_entry.get())
+
+    # Create a server socket
+    connection.server_socket = socket.socket(
+        socket.AF_INET, socket.SOCK_STREAM)
+    connection.server_socket.bind((connection.host_ip, connection.port))
+    connection.server_socket.listen()
+
+    # Update the GUI
+    start_button.config(state=DISABLED)
+    end_button.config(state=NORMAL)
+    port_entry.config(state=DISABLED)
+    input_entry.config(state=NORMAL)
+    send_button.config(state=NORMAL)
+    message_button.config(state=NORMAL)
+    kick_button.config(state=NORMAL)
+    ban_button.config(state=NORMAL)
+    history_listbox.delete(0, END)
+    history_listbox.insert(0, f"Server started on port {connection.port}")
+
+
+def end_server(connection):
+    '''Ends the server and closes all connections'''
+    pass
+
+
+def connect_client(connection):
+    '''Connects a client to the server'''
+    pass
+
+
+def create_message(flag, name, message, color):
+    '''Creates a JSON message to be sent to the clients'''
+    pass
+
+
+def process_message(connection, message_json, client_socket, client_address=(0, 0)):
+    '''Update server information based on the message received'''
+    pass
+
+
+def broadcast_message(connection, message_json):
+    '''Broadcasts a message to all clients'''
+    pass
+
+
+def receive_message(connection, client_socket):
+    '''Receives a message from a client'''
+    pass
+
+
+def self_broadcast(connection, message_json):
+    '''Broadcasts a special admin message to all clients'''
+    pass
+
+
+def private_message(connection, message_json):
+    '''Sends a private message to a specific client'''
+    pass
+
+
+def kick_client(connection, message_json):
+    '''Kicks a client from the server'''
+    pass
+
+
+def ban_client(connection, message_json):
+    '''Bans a client from the server'''
+    pass
 
 
 # Define GUI Layout
@@ -41,7 +130,7 @@ port_label = tk.Label(connection_frame, text="Port Number:",
 port_entry = tk.Entry(connection_frame, bg=black,
                       fg=light_green, font=my_font, borderwidth=3, width=10)
 start_button = tk.Button(connection_frame, text="Start Server",
-                         font=my_font, bg=light_green, fg=black, borderwidth=5)
+                         font=my_font, bg=light_green, fg=black, borderwidth=5, command=lambda: start_server(my_connection))
 end_button = tk.Button(connection_frame, text="End Server", font=my_font,
                        bg=light_green, fg=black, borderwidth=5, state=DISABLED)
 
@@ -93,4 +182,5 @@ ban_button.grid(row=0, column=2, padx=5, pady=5)
 
 # Run root window's main loop
 
+my_connection = Connection()
 root.mainloop()
