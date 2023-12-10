@@ -132,6 +132,25 @@ def process_message(connection, message_json, client_socket, client_address=(0, 
         message_json = json.dumps(message_packet)
         broadcast_message(connection, message_json.encode(connection.encoder))
 
+        # Update the GUI
+        client_listbox.insert(
+            END, f"Name: {name}    IP Address: {client_address[0]}")
+
+        # Create a thread to listen for messages from the client
+        client_thread = threading.Thread(
+            target=receive_message, args=(connection, client_socket,))
+        client_thread.start()
+
+    elif flag == "MESSAGE":
+        pass
+
+    elif flag == "DISCONNECT":
+        pass
+
+    else:
+        # Catch errors
+        history_listbox(0, "ERROR: Unrecognized message flag " + flag)
+
 
 def broadcast_message(connection, message_json):
     '''Broadcasts a message to all clients. All JSON are encoded'''
