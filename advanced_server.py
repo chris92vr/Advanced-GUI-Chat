@@ -142,7 +142,12 @@ def process_message(connection, message_json, client_socket, client_address=(0, 
         client_thread.start()
 
     elif flag == "MESSAGE":
-        pass
+        # Broadcast the message to all clients and update the GUI
+        broadcast_message(connection, message_json)
+
+        # Update the GUI
+        history_listbox.insert(0, f"{name}: {message}")
+        history_listbox.itemconfig(0, fg=color)
 
     elif flag == "DISCONNECT":
         pass
@@ -160,7 +165,17 @@ def broadcast_message(connection, message_json):
 
 def receive_message(connection, client_socket):
     '''Receives a message from a client'''
-    pass
+    while True:
+        # Get the message from the client
+        try:
+            message_json = client_socket.recv(
+                connection.bytesize)
+            process_message(connection, message_json, client_socket)
+        except:
+            # Catch errors
+            history_listbox.insert(
+                END, "ERROR: Unable to receive message from client")
+            break
 
 
 def self_broadcast(connection, message_json):
