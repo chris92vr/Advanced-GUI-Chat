@@ -178,14 +178,32 @@ def receive_message(connection, client_socket):
             break
 
 
-def self_broadcast(connection, message_json):
+def self_broadcast(connection):
     '''Broadcasts a special admin message to all clients'''
-    pass
+    # Create a message packet
+    message_packet = create_message(
+        "MESSAGE", "Admin (broadcast)", input_entry.get(), light_green)
+    message_json = json.dumps(message_packet)
+    broadcast_message(connection, message_json.encode(connection.encoder))
+
+    # Clear the input entry
+    input_entry.delete(0, END)
 
 
-def private_message(connection, message_json):
+def private_message(connection):
     '''Sends a private message to a specific client'''
-    pass
+    # Select the client from the client listbox and access the client socket
+    client_index = client_listbox.curselection()[0]
+    client_socket = connection.client_sockets[client_index]
+
+    # Create a message packet
+    message_packet = create_message("MESSAGE", "Admin (private)",
+                                    input_entry.get(), light_green)
+    message_json = json.dumps(message_packet)
+    client_socket.send(message_json.encode(connection.encoder))
+
+    # Clear the input entry
+    input_entry.delete(0, END)
 
 
 def kick_client(connection, message_json):
@@ -251,14 +269,14 @@ client_scrollbar.grid(row=0, column=1, sticky="NS")
 input_entry = tk.Entry(message_frame, width=45, borderwidth=3,
                        font=my_font)
 send_button = tk.Button(message_frame, text="Broadcast", borderwidth=5, width=10,
-                        font=my_font, bg=light_green, state=DISABLED)
+                        font=my_font, bg=light_green, state=DISABLED, command=lambda: self_broadcast(my_connection))
 input_entry.grid(row=0, column=0, padx=5, pady=5)
 send_button.grid(row=0, column=1, padx=5, pady=5)
 
 # Layout for the admin frame
 
 message_button = tk.Button(admin_frame, text="Send PM", font=my_font,
-                           bg=light_green, fg=black, borderwidth=5, state=DISABLED)
+                           bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: private_message(my_connection))
 kick_button = tk.Button(admin_frame, text="Kick", font=my_font,
                         bg=light_green, fg=black, borderwidth=5, state=DISABLED)
 ban_button = tk.Button(admin_frame, text="Ban", font=my_font,
