@@ -72,12 +72,42 @@ def end_server(connection):
 
 def connect_client(connection):
     '''Connects a client to the server'''
-    pass
+    while True:
+        try:
+            client_socket, client_address = connection.server_socket.accept()
+            # Check to see if the client is banned
+            if client_address[0] in connection.banned_ips:
+                message_packet = create_message("DISCONNECT", "Admin (private)", "You are banned from the server", light_green
+                                                )
+                message_json = json.dumps(message_packet)
+                client_socket.send(message_json.encode(connection.encoder))
+                client_socket.close()
+            else:
+                # Send a message to the client to receive info
+                message_packet = create_message(
+                    "INFO", "Admin (private)", "Please enter your name", light_green)
+                message_json = json.dumps(message_packet)
+                client_socket.send(message_json.encode(connection.encoder))
+
+                # Wait for a confirmation message verifying the connection
+                message_json = client_socket.recv(
+                    connection.bytesize).decode(connection.encoder)
+                process_message(connection, message_json,
+                                client_socket, client_address)
+        except:
+            break
 
 
 def create_message(flag, name, message, color):
     '''Creates a JSON message to be sent to the clients'''
-    pass
+    message_packet = {
+        "flag": flag,
+        "name": name,
+        "message": message,
+        "color": color
+    }
+
+    return message_packet
 
 
 def process_message(connection, message_json, client_socket, client_address=(0, 0)):
