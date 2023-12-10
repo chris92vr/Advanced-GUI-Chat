@@ -112,11 +112,29 @@ def create_message(flag, name, message, color):
 
 def process_message(connection, message_json, client_socket, client_address=(0, 0)):
     '''Update server information based on the message received'''
-    pass
+    # Load the message packet
+    message_packet = json.loads(message_json)
+
+    # Get the flag
+    flag = message_packet["flag"]
+    name = message_packet["name"]
+    message = message_packet["message"]
+    color = message_packet["color"]
+
+    if flag == "INFO":
+        # Add the client to the client list
+        connection.client_sockets.append(client_socket)
+        connection.client_ips.append(client_address[0])
+
+        # Broadcast the new connection to all clients and update the GUI
+        message_packet = create_message(
+            "MESSAGE", "Admin", f"{name} has joined the server", light_green)
+        message_json = json.dumps(message_packet)
+        broadcast_message(connection, message_json.encode(connection.encoder))
 
 
 def broadcast_message(connection, message_json):
-    '''Broadcasts a message to all clients'''
+    '''Broadcasts a message to all clients. All JSON are encoded'''
     pass
 
 
