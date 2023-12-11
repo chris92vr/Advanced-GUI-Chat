@@ -3,6 +3,12 @@ import socket
 import threading
 import json
 from tkinter import DISABLED, END, NORMAL, VERTICAL
+import logging
+from datetime import datetime
+
+# Set up logging
+logging.basicConfig(filename='server.log', level=logging.INFO,
+                    format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
 # Define Window
@@ -28,6 +34,7 @@ class Connection:
         self.host_ip = socket.gethostbyname(socket.gethostname())
         self.encoder = "utf-8"
         self.bytesize = 1024
+        logging.info(f'Connection initialized at {datetime.now()}')
 
         self.client_sockets = []
         self.client_ips = []
@@ -64,6 +71,9 @@ def start_server(connection):
         target=connect_client, args=(connection,))
     connection_thread.start()
 
+    # Log the server start
+    logging.info(f'Server started at {datetime.now()}')
+
 
 def end_server(connection):
     '''Ends the server and closes all connections'''
@@ -87,6 +97,9 @@ def end_server(connection):
     # Close Server Socket
     connection.server_socket.close()
 
+    # Log the server end
+    logging.info(f'Server ended at {datetime.now()}')
+
 
 def connect_client(connection):
     '''Connects a client to the server'''
@@ -100,6 +113,9 @@ def connect_client(connection):
                 message_json = json.dumps(message_packet)
                 client_socket.send(message_json.encode(connection.encoder))
                 client_socket.close()
+                # Log the banned client
+                logging.info(
+                    f'Client {client_address} tried to connect but is banned at {datetime.now()}')
             else:
                 # Send a message to the client to receive info
                 message_packet = create_message(
@@ -112,6 +128,9 @@ def connect_client(connection):
                     connection.bytesize).decode(connection.encoder)
                 process_message(connection, message_json,
                                 client_socket, client_address)
+                # Log the connected client
+                logging.info(
+                    f'Client {client_address} connected at {datetime.now()}')
         except:
             break
 
@@ -250,6 +269,9 @@ def kick_client(connection):
         "DISCONNECT", "Admin (private)", "You have been kicked from the server", light_green)
     message_json = json.dumps(message_packet)
     client_socket.send(message_json.encode(connection.encoder))
+    # Log the kicked client
+    logging.info(
+        f'Client {connection.client_ips[client_index]} kicked at {datetime.now()}')
 
 
 def ban_client(connection):
@@ -267,6 +289,9 @@ def ban_client(connection):
 
     # Ban the client
     connection.banned_ips.append(connection.client_ips[client_index])
+    # Log the banned client
+    logging.info(
+        f'Client {connection.client_ips[client_index]} banned at {datetime.now()}')
 
 
 # Define GUI Layout
