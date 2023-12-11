@@ -72,7 +72,8 @@ def start_server(connection):
     connection_thread.start()
 
     # Log the server start
-    logging.info(f'Server started at {datetime.now()}')
+    logging.info(
+        f'Server started at {datetime.now()} on port {connection.port}')
 
 
 def end_server(connection):
