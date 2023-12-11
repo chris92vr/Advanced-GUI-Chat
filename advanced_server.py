@@ -15,14 +15,14 @@ logging.basicConfig(filename='server.log', level=logging.INFO,
 root = tk.Tk()
 root.title("Chat Server")
 root.iconbitmap("icon.ico")
-root.geometry("800x800")
+root.geometry("680x800")
 root.resizable(0, 0)
 
 # Define fonts and colors
 my_font = ('SimSun', 14)
-black = "#010101"
+greay_grey = "#2f2f2f"
 light_green = "#1fc742"
-root.config(bg=black)
+root.config(bg=greay_grey)
 
 # Create a connection class to handle all the connection logic
 
@@ -297,11 +297,11 @@ def ban_client(connection):
 
 # Define GUI Layout
 # Create frames
-connection_frame = tk.Frame(root, bg=black)
-history_frame = tk.Frame(root, bg=black)
-client_frame = tk.Frame(root, bg=black)
-message_frame = tk.Frame(root, bg=black)
-admin_frame = tk.Frame(root, bg=black)
+connection_frame = tk.Frame(root, bg=greay_grey)
+history_frame = tk.Frame(root, bg=greay_grey)
+client_frame = tk.Frame(root, bg=greay_grey)
+message_frame = tk.Frame(root, bg=greay_grey)
+admin_frame = tk.Frame(root, bg=greay_grey)
 
 connection_frame.pack(pady=5)
 history_frame.pack()
@@ -311,13 +311,13 @@ admin_frame.pack()
 
 # Layout for the connection frame
 port_label = tk.Label(connection_frame, text="Port Number:",
-                      bg=black, fg=light_green, font=my_font)
-port_entry = tk.Entry(connection_frame, bg=black,
+                      bg=greay_grey, fg=light_green, font=my_font)
+port_entry = tk.Entry(connection_frame, bg=greay_grey,
                       fg=light_green, font=my_font, borderwidth=3, width=10)
 start_button = tk.Button(connection_frame, text="Start Server",
-                         font=my_font, bg=light_green, fg=black, borderwidth=5, command=lambda: start_server(my_connection))
+                         font=my_font, bg=light_green, fg=greay_grey, borderwidth=5, command=lambda: start_server(my_connection))
 end_button = tk.Button(connection_frame, text="End Server", font=my_font,
-                       bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: end_server(my_connection))
+                       bg=light_green, fg=greay_grey, borderwidth=5, state=DISABLED, command=lambda: end_server(my_connection))
 
 port_label.grid(row=0, column=0, padx=2, pady=10)
 port_entry.grid(row=0, column=1, padx=2, pady=10)
@@ -328,7 +328,7 @@ end_button.grid(row=0, column=3, padx=2, pady=10)
 hystory_scrollbar = tk.Scrollbar(
     history_frame, orient=VERTICAL)
 history_listbox = tk.Listbox(history_frame, height=15, width=55, borderwidth=3,
-                             bg=black, fg=light_green, font=my_font, yscrollcommand=hystory_scrollbar.set)
+                             bg=greay_grey, fg=light_green, font=my_font, yscrollcommand=hystory_scrollbar.set)
 hystory_scrollbar.config(command=history_listbox.yview)
 
 history_listbox.grid(row=0, column=0)
@@ -338,7 +338,7 @@ hystory_scrollbar.grid(row=0, column=1, sticky="NS")
 
 client_scrollbar = tk.Scrollbar(client_frame, orient=VERTICAL)
 client_listbox = tk.Listbox(client_frame, height=15, width=55, borderwidth=3,
-                            bg=black, fg=light_green, font=my_font, yscrollcommand=client_scrollbar.set)
+                            bg=greay_grey, fg=light_green, font=my_font, yscrollcommand=client_scrollbar.set)
 client_scrollbar.config(command=client_listbox.yview)
 
 client_listbox.grid(row=0, column=0)
@@ -355,11 +355,11 @@ send_button.grid(row=0, column=1, padx=5, pady=5)
 # Layout for the admin frame
 
 message_button = tk.Button(admin_frame, text="Send PM", font=my_font,
-                           bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: private_message(my_connection))
+                           bg=light_green, fg=greay_grey, borderwidth=5, state=DISABLED, command=lambda: private_message(my_connection))
 kick_button = tk.Button(admin_frame, text="Kick", font=my_font,
-                        bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: kick_client(my_connection))
+                        bg=light_green, fg=greay_grey, borderwidth=5, state=DISABLED, command=lambda: kick_client(my_connection))
 ban_button = tk.Button(admin_frame, text="Ban", font=my_font,
-                       bg=light_green, fg=black, borderwidth=5, state=DISABLED, command=lambda: ban_client(my_connection))
+                       bg=light_green, fg=greay_grey, borderwidth=5, state=DISABLED, command=lambda: ban_client(my_connection))
 
 message_button.grid(row=0, column=0, padx=5, pady=5)
 kick_button.grid(row=0, column=1, padx=5, pady=5)
